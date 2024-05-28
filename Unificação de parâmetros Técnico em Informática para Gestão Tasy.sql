@@ -49,7 +49,7 @@ SELECT
     SYSDATE,                             -- Data de Atualização.
     'VAFILHO' AS nm_usuario,             -- Nome do Usuário que está atualizando.
     tec_inf.vl_parametro,                -- Valor do Parâmetro do Perfil "TI Funções".
-    'Unificação de Perfis: valor recebido do perfil TI FUNCOES' AS ds_observacao,  -- Observação.
+    'Unificação de Perfis: valor recebido do perfil Técnico em Informática' AS ds_observacao,  -- Observação.
     NULL AS cd_estabelecimento,          -- Código do Estabelecimento (nulo).
     funcao_param_perfil_seq.nextval      -- Sequência Interna (próximo valor da sequência).
 FROM funcao fun
