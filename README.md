@@ -6,6 +6,6 @@
 
 ## SQL Joins:
 
-![Texto Alternativo](URL_da_Imagem)
+![SQL Joins](https://github.com/valmir-filho/SQLs/blob/main/sql-joins.jpg)
 
 ### IDE utilizada: Oracle SQL Developer.
