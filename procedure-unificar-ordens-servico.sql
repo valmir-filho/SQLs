@@ -1,5 +1,6 @@
-CREATE OR REPLACE PROCEDURE UNIFICA_OS_LOGINS (nm_usuario_p VARCHAR2)
+CREATE OR REPLACE PROCEDURE UNIFICAR_OS_LOGINS (nm_usuario_p VARCHAR2)
 IS
+  
   CURSOR c1 IS        
     SELECT NR_SEQUENCIA, DS_DANO
     FROM MAN_ORDEM_SERVICO OS 
@@ -10,12 +11,12 @@ IS
 
   nr_sequencia_ NUMBER(10, 0);
   ds_dano_ VARCHAR2(32767) := '';
-
   cd_pessoa_solicitante_ NUMBER(10, 0);
   nova_os_ NUMBER(10, 0);
   concatenated_data_ VARCHAR2(32767) := '';
 
 BEGIN
+  
   nova_os_ := man_ordem_serv_tecnico_seq.NEXTVAL;
   
   SELECT MAX(cd_pessoa_fisica) 
@@ -24,31 +25,36 @@ BEGIN
   WHERE nm_usuario = nm_usuario_p;
 
   OPEN c1;
+  
   LOOP
+    
     FETCH c1 INTO nr_sequencia_, ds_dano_;
     EXIT WHEN c1%NOTFOUND;
 
     concatenated_data_ := concatenated_data_ || ds_dano_ || CHR(10) || CHR(10) || CHR(10);
 
-    -- Inserir histórico, que é pré-requisito para encerrar as OS's antigas.
+    -- Inserir histórico, que é pré-requisito para encerrar as OS's concatenadas.
     INSERT INTO MAN_ORDEM_SERV_TECNICO (
       NR_SEQUENCIA, NR_SEQ_ORDEM_SERV, DT_HISTORICO, DT_ATUALIZACAO, 
       DT_LIBERACAO, NM_USUARIO, NM_USUARIO_LIB, DS_RELAT_TECNICO, 
       NR_SEQ_TIPO, IE_ORIGEM
     ) VALUES (
       MAN_ORDEM_SERV_TECNICO_SEQ.NEXTVAL, nr_sequencia_, SYSDATE, SYSDATE, 
-      SYSDATE, nm_usuario_p, nm_usuario_p, 'OS concatenada na OS geral n.' || TO_CHAR(nova_os_), 1, 'I'
+      SYSDATE, nm_usuario_p, nm_usuario_p, 'OS concatenada na OS geral n.' || TO_CHAR(nova_os_),
+      1, 'I'
     );
 
-    -- Fechamento das OS que foram concatenadas.
+    -- Fechamento das OS's que foram concatenadas.
     UPDATE MAN_ORDEM_SERVICO 
     SET IE_STATUS_ORDEM = 3, NR_SEQ_ESTAGIO = 12, NM_USUARIO = nm_usuario_p, 
         NM_USUARIO_EXEC = nm_usuario_p, DT_INICIO_REAL = SYSDATE, DT_FIM_REAL = SYSDATE
     WHERE NR_SEQUENCIA = nr_sequencia_;
+  
   END LOOP;
+  
   CLOSE c1;
 
-  DBMS_OUTPUT.PUT_LINE(concatenated_data_);
+  --DBMS_OUTPUT.PUT_LINE(concatenated_data_);
 
   -- Inserção da última OS concatenada.
   INSERT INTO MAN_ORDEM_SERVICO (
@@ -64,8 +70,11 @@ BEGIN
     nova_os_, 6060, NULL, 22120, 
     cd_pessoa_solicitante_, SYSDATE, 'M', 'N', 
     'Solicitação de login de usuário (unificada)', SYSDATE, nm_usuario_p, SYSDATE, 
-    SYSDATE, concatenated_data_, 0, 1, 11, 91, 21, 'S', 
-    8, 'I', 1, SYSDATE, nm_usuario_p, 'S', 'Ramal 3316-5999', 4, NULL, 717, NULL, 12
+    SYSDATE, concatenated_data_, 0, 1,
+    11, 91, 21, 'S', 
+    8, 'I', 1, SYSDATE,
+    nm_usuario_p, 'S', 'Ramal 3316-5999', 4,
+    NULL, 717, NULL, 12
   );
 
   COMMIT;
@@ -74,4 +83,5 @@ EXCEPTION
   WHEN OTHERS THEN
     ROLLBACK;
     RAISE_APPLICATION_ERROR(-20001, 'Erro ao criar as ordens de serviço.');
-END UNIFICA_OS_LOGINS;
+
+END UNIFICAR_OS_LOGINS;
