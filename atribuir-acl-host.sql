@@ -5,3 +5,6 @@ BEGIN
   );
   COMMIT;
 END;
+
+-- Consulta a ACL.
+SELECT * FROM dba_network_acls;
