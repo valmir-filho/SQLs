@@ -1,6 +1,6 @@
 SELECT 
-    NM_USUARIO_EXEC AS "Usuário Executor",
-    COUNT(NR_SEQUENCIA) AS "N° de OS Resolvidas 07/24"
+    NM_USUARIO_EXEC AS "UsuÃ¡rio Executor",
+    COUNT(NR_SEQUENCIA) AS "NÂ° de OS Resolvidas 07/24"
 FROM 
     MAN_ORDEM_SERVICO
 WHERE 
@@ -9,4 +9,4 @@ WHERE
 GROUP BY 
     NM_USUARIO_EXEC
 ORDER BY
-    "N° de OS Resolvidas 07/24" DESC;
+    "NÂ° de OS Resolvidas 07/24" DESC;
